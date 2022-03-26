@@ -1,0 +1,38 @@
+services:
+  cointracker:
+    build: .
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PORT: ${MYSQL_PORT}
+    depends_on:
+      - mysql
+    networks:
+      - cointracker
+    links:
+       - mysql
+
+  mysql:
+    image: mysql:8.0.28-debian
+    command: --authentication_policy=mysql_native_password
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - cointracker
+
+networks:
+  cointracker:
+    driver: bridge

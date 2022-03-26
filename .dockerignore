@@ -1,0 +1,7 @@
+./mysql_data
+./.idea
+.git/
+.env
+./__pycache__/
+docker-compose.yaml
+Dockerfile
